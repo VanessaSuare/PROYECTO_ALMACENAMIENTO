@@ -1,146 +1,98 @@
-//Esquema 
+//Nodos y Esquema
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/Cliente.csv' 
+AS row WITH row WHERE row.idCliente IS NOT NULL MERGE (c:Cliente { idCliente: toInteger(row.idCliente), nombre: row.nombre, edad: toInteger(row.edad), telefono: row.telefono, sexo: row.sexo, tieneTitulo: row.tieneTitulo});
 
-// Nodo Cliente
-(:Cliente {idCliente, nombre, edad, telefono, sexo, tieneTitulo})
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/Direccion.csv' 
+AS row WITH row WHERE row.idDireccion IS NOT NULL MERGE (d:Direccion { idDireccion: toInteger(row.idDireccion), ubicacion: row.ubicacion, barrio: row.barrio, codigoPostal: row.codigoPostal});
 
-// Nodo Dirección
-(:Direccion {idDireccion, ubicacion, barrio, codigoPostal})
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/Ciudad.csv' 
+AS row WITH row WHERE row.idCiudad IS NOT NULL MERGE (:Ciudad { idCiudad: toInteger(row.idCiudad), nombre: row.nombre, pais: row.pais});
 
-// Nodo Ciudad
-(:Ciudad {idCiudad, nombre, pais})
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/Estudio.csv' 
+AS row WITH row WHERE row.idEstudio IS NOT NULL MERGE (:Estudio { idEstudio: toInteger(row.idEstudio), titulo: row.titulo});
 
-// Nodo Afición
-(:Aficion {nombre, tipo})
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/Orden.csv' 
+AS row WITH row WHERE row.idOrden IS NOT NULL MERGE (:Orden { idOrden: toInteger(row.idOrden), fechaOrden: date(row.fechaOrden), monto: toInteger(row.monto)});
 
-// Nodo Estudio
-(:Estudio {idEstudio, titulo})
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/Producto.csv' 
+AS row WITH row WHERE row.idProducto IS NOT NULL MERGE (:Producto { idProducto: toInteger(row.idProducto), nombre: row.nombre, precio: toInteger(row.precio)});
 
-// Nodo Orden
-(:Orden {idOrden, fechaOrden, monto})
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/Categoria.csv' 
+AS row WITH row WHERE row.idCategoria IS NOT NULL MERGE (:Categoria { idCategoria: toInteger(row.idCategoria), nombre: row.nombre});
 
-// Nodo Producto
-(:Producto {idProducto, nombre, precio})
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/Proveedor.csv' 
+AS row WITH row WHERE row.idProveedor IS NOT NULL MERGE (:Proveedor { idProveedor: toInteger(row.idProveedor), nombre: row.nombre});
 
-// Nodo Categoría
-(:Categoria {idCategoria, nombre})
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/Aficion.csv' 
+AS row WITH row WHERE row.nombre IS NOT NULL AND row.tipo IS NOT NULL MERGE (:Aficion {nombre: row.nombre, tipo: row.tipo});
 
-// Nodo Proveedor
-(:Proveedor {idProveedor, nombre})
-
-// Relaciones
-(c:Cliente)-[:HA_VISTO]->(p:Producto)
-(c:Cliente)-[:HA_CREADO]->(o:Orden)
-(c:Cliente)-[:VIVE_EN]->(d:Direccion)
-(c:Cliente)-[:TIENE_UNA]->(a:Aficion)
-(c:Cliente)-[:TIENE_TITULO]->(e:Estudio)
-
-(p:Producto)-[:PERTENECE_A]->(cat:Categoria)
-(p1:Producto)-[:ESTA_RELACIONADO]->(p2:Producto)
-(p:Producto)-[:DISTRIBUIDO_POR]->(pr:Proveedor)
-
-(d:Direccion)-[:UBICADA_EN]->(ci:Ciudad)
-
-(o:Orden)-[:COMPUESTA_DE]->(p:Producto)
-
-(pr:Proveedor)-[:SE_UBICA_EN]->(ci:Ciudad)
-
-
-//Nodos
-
-//Crear nodo de Cliente
-CREATE (:Cliente {idCliente: 1, nombre: 'Juan', edad: 30, telefono: '1234567890', sexo: 'M', tieneTitulo: true})
-
-// Crear nodo de Dirección
-CREATE (:Direccion {idDireccion: 1, ubicacion: 'Calle 123', barrio: 'Barrio 1', codigoPostal: '11111'})
-
-// Crear nodo de Ciudad
-CREATE (:Ciudad {idCiudad: 1, nombre: 'Cali', pais: 'Colombia'})
-
-// Crear nodo de Afición
-CREATE (:Aficion {nombre: 'Fútbol', tipo: 'Deporte'})
-
-// Crear nodo de Estudio
-CREATE (:Estudio {idEstudio: 1, titulo: 'Ingeniería de Sistemas'})
-
-// Crear nodo de Orden
-CREATE (:Orden {idOrden: 1, fechaOrden: '2023-11-11', monto: 100.0})
-
-// Crear nodo de Producto
-CREATE (:Producto {idProducto: 1, nombre: 'Producto 1', precio: 10.0})
-
-// Crear nodo de Categoría
-CREATE (:Categoria {idCategoria: 1, nombre: 'Categoría 1'})
-
-// Crear nodo de Proveedor
-CREATE (:Proveedor {idProveedor: 1, nombre: 'Proveedor 1'})
 
 //Relaciones
 
-//Relación entre Cliente y Producto (HA_VISTO):
-MATCH (c:Cliente {idCliente: 1})
-WITH c
-MATCH (p:Producto {idProducto: 1})
-CREATE (c)-[:HA_VISTO]->(p)
+MATCH (c:Cliente {idCliente: 1}) MATCH (p:Producto {idProducto: 1}) CREATE (c)-[:HA_VISTO]->(p)
 
-//Relación entre Cliente y Orden (HA_CREADO):
-MATCH (c:Cliente {idCliente: 1})
-WITH c
-MATCH (o:Orden {idOrden: 1})
-CREATE (c)-[:HA_CREADO]->(o)
+MATCH (c:Cliente {idCliente: 1}) MATCH (o:Orden {idOrden: 1}) CREATE (c)-[:HA_CREADO]->(o)
 
-//Relación entre Cliente y Dirección (VIVE_EN):
-MATCH (c:Cliente {idCliente: 1})
-WITH c
-MATCH (d:Direccion {idDireccion: 1})
-CREATE (c)-[:VIVE_EN]->(d)
+MATCH (c:Cliente {idCliente: 1}) MATCH (d:Direccion {idDireccion: 1}) CREATE (c)-[:VIVE_EN]->(d)
 
-//Relación entre Cliente y Afición (TIENE_UNA):
-MATCH (c:Cliente {idCliente: 1})
-WITH c
-MATCH (a:Aficion {nombre: 'Fútbol'})
-CREATE (c)-[:TIENE_UNA]->(a)
+MATCH (c:Cliente {idCliente: 1}) MATCH (a:Aficion {nombre: 'Fútbol'}) CREATE (c)-[:TIENE_UNA]->(a)
 
-//Relación entre Cliente y Estudio (TIENE_TITULO):
-MATCH (c:Cliente {idCliente: 1})
-WITH c
-MATCH (e:Estudio {idEstudio: 1})
-CREATE (c)-[:TIENE_TITULO]->(e)
+MATCH (c:Cliente {idCliente: 1}) MATCH (e:Estudio {idEstudio: 1}) CREATE (c)-[:TIENE_TITULO]->(e)
 
-//Relación entre Producto y Categoría (PERTENECE_A):
-MATCH (p:Producto {idProducto: 1})
-WITH p
-MATCH (cat:Categoria {idCategoria: 1})
-CREATE (p)-[:PERTENECE_A]->(cat)
+MATCH (p:Producto {idProducto: 1}) MATCH (cat:Categoria {idCategoria: 1}) CREATE (p)-[:PERTENECE_A]->(cat)
 
-//Relación entre Producto y Producto (ESTA_RELACIONADO):
-MATCH (p1:Producto {idProducto: 1})
-WITH p1
-MATCH (p2:Producto {idProducto: 2})
-CREATE (p1)-[:ESTA_RELACIONADO]->(p2)
+MATCH (p1:Producto {idProducto: 1}) WITH p1 MATCH (p2:Producto {idProducto: 2}) CREATE (p1)-[:ESTA_RELACIONADO]->(p2)
 
-//Relación entre Producto y Proveedor (DISTRIBUIDO_POR):
-MATCH (p:Producto {idProducto: 1})
-WITH p
-MATCH (pr:Proveedor {idProveedor: 1})
-CREATE (p)-[:DISTRIBUIDO_POR]->(pr)
+MATCH (p:Producto {idProducto: 1}) MATCH (pr:Proveedor {idProveedor: 1}) CREATE (p)-[:DISTRIBUIDO_POR]->(pr)
 
-//Relación entre Dirección y Ciudad (UBICADA_EN):
-MATCH (d:Direccion {idDireccion: 1})
-WITH d
-MATCH (ci:Ciudad {idCiudad: 1})
-CREATE (d)-[:UBICADA_EN]->(ci)
+MATCH (d:Direccion {idDireccion: 1}) MATCH (ci:Ciudad {idCiudad: 1}) CREATE (d)-[:UBICADA_EN]->(ci)
 
-//Relación entre Orden y Producto (COMPUESTA_DE):
-MATCH (o:Orden {idOrden: 1})
-WITH o
-MATCH (p:Producto {idProducto: 1})
-CREATE (o)-[:COMPUESTA_DE]->(p)
+MATCH (o:Orden {idOrden: 1}) MATCH (p:Producto {idProducto: 1}) CREATE (o)-[:COMPUESTA_DE]->(p)
 
-//Relación entre Proveedor y Ciudad (SE_UBICA_EN):
-MATCH (pr:Proveedor {idProveedor: 1})
-WITH pr
-MATCH (ci:Ciudad {idCiudad: 1})
-CREATE (pr)-[:SE_UBICA_EN]->(ci)
+MATCH (pr:Proveedor {idProveedor: 1}) MATCH (ci:Ciudad {idCiudad: 1}) CREATE (pr)-[:SE_UBICA_EN]->(ci)
+
+MATCH (c:Cliente {idCliente: 20}) MATCH (p:Producto {idProducto: 1}) CREATE (c)-[:HA_VISTO]->(p)
+
+MATCH (c:Cliente {idCliente: 20}) MATCH (o:Orden {idOrden: 1}) CREATE (c)-[:HA_CREADO]->(o)
+
+MATCH (c:Cliente {idCliente: 20}) MATCH (d:Direccion {idDireccion: 1}) CREATE (c)-[:VIVE_EN]->(d)
+
+MATCH (c:Cliente {idCliente: 20}) MATCH (a:Aficion {nombre: 'Fútbol'}) CREATE (c)-[:TIENE_UNA]->(a)
+
+MATCH (c:Cliente {idCliente: 20}) MATCH (e:Estudio {idEstudio: 1}) CREATE (c)-[:TIENE_TITULO]->(e)
+
+MATCH (c:Cliente {idCliente: 8}) MATCH (p:Producto {idProducto: 1}) CREATE (c)-[:HA_VISTO]->(p)
+
+MATCH (c:Cliente {idCliente: 8}) MATCH (o:Orden {idOrden: 1}) CREATE (c)-[:HA_CREADO]->(o)
+
+MATCH (c:Cliente {idCliente: 8}) MATCH (d:Direccion {idDireccion: 1}) CREATE (c)-[:VIVE_EN]->(d)
+
+MATCH (c:Cliente {idCliente: 8}) MATCH (a:Aficion {nombre: 'Fútbol'}) CREATE (c)-[:TIENE_UNA]->(a)
+
+MATCH (c:Cliente {idCliente: 8}) MATCH (e:Estudio {idEstudio: 1}) CREATE (c)-[:TIENE_TITULO]->(e)
+
+MATCH (p:Producto {idProducto: 1}) MATCH (cat:Categoria {idCategoria: 1}) CREATE (p)-[:PERTENECE_A]->(cat)
+
+MATCH (p1:Producto {idProducto: 1}) WITH p1 MATCH (p2:Producto {idProducto: 2}) CREATE (p1)-[:ESTA_RELACIONADO]->(p2)
+
+MATCH (p:Producto {idProducto: 1}) MATCH (pr:Proveedor {idProveedor: 1}) CREATE (p)-[:DISTRIBUIDO_POR]->(pr)
+
+MATCH (d:Direccion {idDireccion: 1}) MATCH (ci:Ciudad {idCiudad: 1}) CREATE (d)-[:UBICADA_EN]->(ci)
+
+MATCH (o:Orden {idOrden: 1}) MATCH (p:Producto {idProducto: 1}) CREATE (o)-[:COMPUESTA_DE]->(p)
+
+MATCH (pr:Proveedor {idProveedor: 1}) MATCH (ci:Ciudad {idCiudad: 1}) CREATE (pr)-[:SE_UBICA_EN]->(ci)
+
+MATCH (p:Producto {idProducto: 8}) MATCH (cat:Categoria {idCategoria: 2}) CREATE (p)-[:PERTENECE_A]->(cat)
+
+MATCH (p:Producto {idProducto: 8}) MATCH (pr:Proveedor {idProveedor: 14}) CREATE (p)-[:DISTRIBUIDO_POR]->(pr)
+
+MATCH (d:Direccion {idDireccion: 4}) MATCH (ci:Ciudad {idCiudad: 8}) CREATE (d)-[:UBICADA_EN]->(ci)
+
+MATCH (o:Orden {idOrden: 5}) MATCH (p:Producto {idProducto: 8}) CREATE (o)-[:COMPUESTA_DE]->(p)
+
+MATCH (pr:Proveedor {idProveedor: 14}) MATCH (ci:Ciudad {idCiudad: 8}) CREATE (pr)-[:SE_UBICA_EN]->(ci)
+
 
 // Consultar todas las ordenes creadas por un cliente.
 
