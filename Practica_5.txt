@@ -7,6 +7,8 @@ AS row WITH row WHERE row.idCliente IS NOT NULL MERGE (c:Cliente { idCliente: to
 
 // Nodo Dirección
 (:Direccion {idDireccion, ubicacion, barrio, codigoPostal})
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/Direccion.csv' 
+AS row WITH row WHERE row.idDireccion IS NOT NULL MERGE (d:Direccion { idDireccion: toInteger(row.idDireccion), ubicacion: row.ubicacion, barrio: row.barrio, codigoPostal: row.codigoPostal});
 
 // Nodo Ciudad
 (:Ciudad {idCiudad, nombre, pais})
