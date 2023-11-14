@@ -47,7 +47,7 @@ AS row WITH row WHERE row.nombre IS NOT NULL AND row.tipo IS NOT NULL MERGE (:Af
 LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/cliente_aficion.csv' AS row
 MATCH (c:Cliente {idCliente: toInteger(row.idCliente)})
 MATCH (a:Aficion {idAficion: toInteger(row.idAficion)})
-CREATE (c)-[:TIENE_AFICION]->(a)
+CREATE (c)-[:TIENE_UNA]->(a) // No hizo nada
 
 LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/cliente_ciudad.csv' AS row
 MATCH (c:Cliente {idCliente: toInteger(row.idCliente)})
