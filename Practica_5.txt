@@ -3,12 +3,12 @@
 // Nodo Cliente
 (:Cliente {idCliente, nombre, edad, telefono, sexo, tieneTitulo})
 LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/Cliente.csv' 
-AS row WITH row WHERE row.idCliente IS NOT NULL MERGE (c:Cliente { idCliente: toInteger(row.idCliente), nombre: row.nombre, edad: toInteger(row.edad), telefono: row.telefono, sexo: row.sexo, tieneTitulo: row.tieneTitulo});
+AS row WITH row WHERE row.idCliente IS NOT NULL MERGE (:Cliente { idCliente: toInteger(row.idCliente), nombre: row.nombre, edad: toInteger(row.edad), telefono: row.telefono, sexo: row.sexo, tieneTitulo: row.tieneTitulo});
 
 // Nodo Dirección
 (:Direccion {idDireccion, ubicacion, barrio, codigoPostal})
 LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/Direccion.csv' 
-AS row WITH row WHERE row.idDireccion IS NOT NULL MERGE (d:Direccion { idDireccion: toInteger(row.idDireccion), ubicacion: row.ubicacion, barrio: row.barrio, codigoPostal: row.codigoPostal});
+AS row WITH row WHERE row.idDireccion IS NOT NULL MERGE (:Direccion { idDireccion: toInteger(row.idDireccion), ubicacion: row.ubicacion, barrio: row.barrio, codigoPostal: row.codigoPostal});
 
 // Nodo Ciudad
 (:Ciudad {idCiudad, nombre, pais})
