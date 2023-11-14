@@ -1,0 +1,29 @@
+// Consultar todas las ordenes creadas por un cliente.
+
+MATCH (c:Cliente {idCliente: 1})-[:HA_CREADO]->(o:Orden)
+RETURN o;
+
+// ¿Cuáles son los productos más comprados por un cliente?
+
+MATCH (c:Cliente {idCliente: 1})-[:HA_CREADO]->(o:Orden)-[:COMPUESTA_DE]->(p:Producto)
+WITH p, COUNT(o) AS cantidadCompras
+RETURN p, cantidadCompras
+ORDER BY cantidadCompras DESC;
+
+// ¿Cuáles son los productos más demandados por los clientes de un sexo
+(hombre/mujer)? aun no se si funciona
+
+MATCH (c:Cliente)-[:HA_CREADO]->(o:Orden)-[:COMPUESTA_DE]->(p:Producto)
+WHERE c.sexo = 'H'  // o 'M' para mujeres
+WITH p, COUNT(o) AS cantidadCompras
+RETURN p, cantidadCompras
+ORDER BY cantidadCompras DESC;
+
+// ¿Cuáles son los principales productos comprados por los clientes que tiene un título
+académico? aun no he probado con mas productos
+
+MATCH (c:Cliente {tieneTitulo: true})-[:HA_CREADO]->(o:Orden)-[:COMPUESTA_DE]->(p:Producto)
+WITH p, COUNT(o) AS cantidadCompras
+RETURN p, cantidadCompras
+ORDER BY cantidadCompras DESC;
+

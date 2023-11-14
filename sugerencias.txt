@@ -1,0 +1,17 @@
+// Sugerencias
+
+// 5. Sugiere productos a un cliente en base a los productos que ha comprado
+MATCH (c:Cliente {idCliente: 1})-[:HA_CREADO]->(o:Orden)-[:COMPUESTA_DE]->(p:Producto)-[:ESTA_RELACIONADO]->(related:Producto)
+WHERE NOT (c)-[:HA_CREADO]->()-[:COMPUESTA_DE]->(related)
+RETURN DISTINCT related AS SuggestedProducts;
+
+// 6. Sugiere productos a un cliente en base a los productos que ha visto
+MATCH (c:Cliente {idCliente: 1})-[:HA_VISTO]->(p:Producto)-[:PERTENECE_A]->(cat:Categoria)<-[:PERTENECE_A]-(suggested:Producto)
+WHERE NOT (c)-[:HA_VISTO]->(suggested)
+RETURN DISTINCT suggested AS SuggestedProducts;
+
+// 7. Sugiere productos al cliente respecto a los ordenados por sus vecinos
+MATCH (c1:Cliente {idCliente: 1})-[:VIVE_EN]->(:Direccion)-[:UBICADA_EN]->(ci:Ciudad)<-[:UBICADA_EN]-(:Direccion)<-[:VIVE_EN]-(c2:Cliente)
+MATCH (c2)-[:HA_CREADO]->(o:Orden)-[:COMPUESTA_DE]->(p:Producto)
+WHERE NOT (c1)-[:HA_CREADO]->()-[:COMPUESTA_DE]->(p)
+RETURN DISTINCT p AS SuggestedProducts;

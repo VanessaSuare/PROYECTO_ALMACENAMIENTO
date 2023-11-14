@@ -1,0 +1,190 @@
+//Esquema 
+
+// Nodo Cliente
+(:Cliente {idCliente, nombre, edad, telefono, sexo, tieneTitulo})
+
+// Nodo Dirección
+(:Direccion {idDireccion, ubicacion, barrio, codigoPostal})
+
+// Nodo Ciudad
+(:Ciudad {idCiudad, nombre, pais})
+
+// Nodo Afición
+(:Aficion {nombre, tipo})
+
+// Nodo Estudio
+(:Estudio {idEstudio, titulo})
+
+// Nodo Orden
+(:Orden {idOrden, fechaOrden, monto})
+
+// Nodo Producto
+(:Producto {idProducto, nombre, precio})
+
+// Nodo Categoría
+(:Categoria {idCategoria, nombre})
+
+// Nodo Proveedor
+(:Proveedor {idProveedor, nombre})
+
+// Relaciones
+(c:Cliente)-[:HA_VISTO]->(p:Producto)
+(c:Cliente)-[:HA_CREADO]->(o:Orden)
+(c:Cliente)-[:VIVE_EN]->(d:Direccion)
+(c:Cliente)-[:TIENE_UNA]->(a:Aficion)
+(c:Cliente)-[:TIENE_TITULO]->(e:Estudio)
+
+(p:Producto)-[:PERTENECE_A]->(cat:Categoria)
+(p1:Producto)-[:ESTA_RELACIONADO]->(p2:Producto)
+(p:Producto)-[:DISTRIBUIDO_POR]->(pr:Proveedor)
+
+(d:Direccion)-[:UBICADA_EN]->(ci:Ciudad)
+
+(o:Orden)-[:COMPUESTA_DE]->(p:Producto)
+
+(pr:Proveedor)-[:SE_UBICA_EN]->(ci:Ciudad)
+
+
+//Nodos
+
+//Crear nodo de Cliente
+CREATE (:Cliente {idCliente: 1, nombre: 'Juan', edad: 30, telefono: '1234567890', sexo: 'M', tieneTitulo: true})
+
+// Crear nodo de Dirección
+CREATE (:Direccion {idDireccion: 1, ubicacion: 'Calle 123', barrio: 'Barrio 1', codigoPostal: '11111'})
+
+// Crear nodo de Ciudad
+CREATE (:Ciudad {idCiudad: 1, nombre: 'Cali', pais: 'Colombia'})
+
+// Crear nodo de Afición
+CREATE (:Aficion {nombre: 'Fútbol', tipo: 'Deporte'})
+
+// Crear nodo de Estudio
+CREATE (:Estudio {idEstudio: 1, titulo: 'Ingeniería de Sistemas'})
+
+// Crear nodo de Orden
+CREATE (:Orden {idOrden: 1, fechaOrden: '2023-11-11', monto: 100.0})
+
+// Crear nodo de Producto
+CREATE (:Producto {idProducto: 1, nombre: 'Producto 1', precio: 10.0})
+
+// Crear nodo de Categoría
+CREATE (:Categoria {idCategoria: 1, nombre: 'Categoría 1'})
+
+// Crear nodo de Proveedor
+CREATE (:Proveedor {idProveedor: 1, nombre: 'Proveedor 1'})
+
+//Relaciones
+
+//Relación entre Cliente y Producto (HA_VISTO):
+MATCH (c:Cliente {idCliente: 1})
+WITH c
+MATCH (p:Producto {idProducto: 1})
+CREATE (c)-[:HA_VISTO]->(p)
+
+//Relación entre Cliente y Orden (HA_CREADO):
+MATCH (c:Cliente {idCliente: 1})
+WITH c
+MATCH (o:Orden {idOrden: 1})
+CREATE (c)-[:HA_CREADO]->(o)
+
+//Relación entre Cliente y Dirección (VIVE_EN):
+MATCH (c:Cliente {idCliente: 1})
+WITH c
+MATCH (d:Direccion {idDireccion: 1})
+CREATE (c)-[:VIVE_EN]->(d)
+
+//Relación entre Cliente y Afición (TIENE_UNA):
+MATCH (c:Cliente {idCliente: 1})
+WITH c
+MATCH (a:Aficion {nombre: 'Fútbol'})
+CREATE (c)-[:TIENE_UNA]->(a)
+
+//Relación entre Cliente y Estudio (TIENE_TITULO):
+MATCH (c:Cliente {idCliente: 1})
+WITH c
+MATCH (e:Estudio {idEstudio: 1})
+CREATE (c)-[:TIENE_TITULO]->(e)
+
+//Relación entre Producto y Categoría (PERTENECE_A):
+MATCH (p:Producto {idProducto: 1})
+WITH p
+MATCH (cat:Categoria {idCategoria: 1})
+CREATE (p)-[:PERTENECE_A]->(cat)
+
+//Relación entre Producto y Producto (ESTA_RELACIONADO):
+MATCH (p1:Producto {idProducto: 1})
+WITH p1
+MATCH (p2:Producto {idProducto: 2})
+CREATE (p1)-[:ESTA_RELACIONADO]->(p2)
+
+//Relación entre Producto y Proveedor (DISTRIBUIDO_POR):
+MATCH (p:Producto {idProducto: 1})
+WITH p
+MATCH (pr:Proveedor {idProveedor: 1})
+CREATE (p)-[:DISTRIBUIDO_POR]->(pr)
+
+//Relación entre Dirección y Ciudad (UBICADA_EN):
+MATCH (d:Direccion {idDireccion: 1})
+WITH d
+MATCH (ci:Ciudad {idCiudad: 1})
+CREATE (d)-[:UBICADA_EN]->(ci)
+
+//Relación entre Orden y Producto (COMPUESTA_DE):
+MATCH (o:Orden {idOrden: 1})
+WITH o
+MATCH (p:Producto {idProducto: 1})
+CREATE (o)-[:COMPUESTA_DE]->(p)
+
+//Relación entre Proveedor y Ciudad (SE_UBICA_EN):
+MATCH (pr:Proveedor {idProveedor: 1})
+WITH pr
+MATCH (ci:Ciudad {idCiudad: 1})
+CREATE (pr)-[:SE_UBICA_EN]->(ci)
+
+// Consultar todas las ordenes creadas por un cliente.
+
+MATCH (c:Cliente {idCliente: 1})-[:HA_CREADO]->(o:Orden)
+RETURN o;
+
+// ¿Cuáles son los productos más comprados por un cliente?
+
+MATCH (c:Cliente {idCliente: 1})-[:HA_CREADO]->(o:Orden)-[:COMPUESTA_DE]->(p:Producto)
+WITH p, COUNT(o) AS cantidadCompras
+RETURN p, cantidadCompras
+ORDER BY cantidadCompras DESC;
+
+// ¿Cuáles son los productos más demandados por los clientes de un sexo
+(hombre/mujer)? aun no se si funciona
+
+MATCH (c:Cliente)-[:HA_CREADO]->(o:Orden)-[:COMPUESTA_DE]->(p:Producto)
+WHERE c.sexo = 'H'  // o 'M' para mujeres
+WITH p, COUNT(o) AS cantidadCompras
+RETURN p, cantidadCompras
+ORDER BY cantidadCompras DESC;
+
+// ¿Cuáles son los principales productos comprados por los clientes que tiene un título
+académico? aun no he probado con mas productos
+
+MATCH (c:Cliente {tieneTitulo: true})-[:HA_CREADO]->(o:Orden)-[:COMPUESTA_DE]->(p:Producto)
+WITH p, COUNT(o) AS cantidadCompras
+RETURN p, cantidadCompras
+ORDER BY cantidadCompras DESC;
+
+// Sugerencias
+
+// 5. Sugiere productos a un cliente en base a los productos que ha comprado
+MATCH (c:Cliente {idCliente: 1})-[:HA_CREADO]->(o:Orden)-[:COMPUESTA_DE]->(p:Producto)-[:ESTA_RELACIONADO]->(related:Producto)
+WHERE NOT (c)-[:HA_CREADO]->()-[:COMPUESTA_DE]->(related)
+RETURN DISTINCT related AS SuggestedProducts;
+
+// 6. Sugiere productos a un cliente en base a los productos que ha visto
+MATCH (c:Cliente {idCliente: 1})-[:HA_VISTO]->(p:Producto)-[:PERTENECE_A]->(cat:Categoria)<-[:PERTENECE_A]-(suggested:Producto)
+WHERE NOT (c)-[:HA_VISTO]->(suggested)
+RETURN DISTINCT suggested AS SuggestedProducts;
+
+// 7. Sugiere productos al cliente respecto a los ordenados por sus vecinos
+MATCH (c1:Cliente {idCliente: 1})-[:VIVE_EN]->(:Direccion)-[:UBICADA_EN]->(ci:Ciudad)<-[:UBICADA_EN]-(:Direccion)<-[:VIVE_EN]-(c2:Cliente)
+MATCH (c2)-[:HA_CREADO]->(o:Orden)-[:COMPUESTA_DE]->(p:Producto)
+WHERE NOT (c1)-[:HA_CREADO]->()-[:COMPUESTA_DE]->(p)
+RETURN DISTINCT p AS SuggestedProducts;

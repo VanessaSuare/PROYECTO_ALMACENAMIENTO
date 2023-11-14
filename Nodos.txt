@@ -1,0 +1,28 @@
+//Nodos
+
+//Crear nodo de Cliente
+CREATE (:Cliente {idCliente: 1, nombre: 'Juan', edad: 30, telefono: '1234567890', sexo: 'M', tieneTitulo: true})
+
+// Crear nodo de Dirección
+CREATE (:Direccion {idDireccion: 1, ubicacion: 'Calle 123', barrio: 'Barrio 1', codigoPostal: '11111'})
+
+// Crear nodo de Ciudad
+CREATE (:Ciudad {idCiudad: 1, nombre: 'Cali', pais: 'Colombia'})
+
+// Crear nodo de Afición
+CREATE (:Aficion {nombre: 'Fútbol', tipo: 'Deporte'})
+
+// Crear nodo de Estudio
+CREATE (:Estudio {idEstudio: 1, titulo: 'Ingeniería de Sistemas'})
+
+// Crear nodo de Orden
+CREATE (:Orden {idOrden: 1, fechaOrden: '2023-11-11', monto: 100.0})
+
+// Crear nodo de Producto
+CREATE (:Producto {idProducto: 1, nombre: 'Producto 1', precio: 10.0})
+
+// Crear nodo de Categoría
+CREATE (:Categoria {idCategoria: 1, nombre: 'Categoría 1'})
+
+// Crear nodo de Proveedor
+CREATE (:Proveedor {idProveedor: 1, nombre: 'Proveedor 1'})

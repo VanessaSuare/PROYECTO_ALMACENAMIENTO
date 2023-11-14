@@ -1,0 +1,67 @@
+//Relaciones
+
+//Relación entre Cliente y Producto (HA_VISTO):
+MATCH (c:Cliente {idCliente: 1})
+WITH c
+MATCH (p:Producto {idProducto: 1})
+CREATE (c)-[:HA_VISTO]->(p)
+
+//Relación entre Cliente y Orden (HA_CREADO):
+MATCH (c:Cliente {idCliente: 1})
+WITH c
+MATCH (o:Orden {idOrden: 1})
+CREATE (c)-[:HA_CREADO]->(o)
+
+//Relación entre Cliente y Dirección (VIVE_EN):
+MATCH (c:Cliente {idCliente: 1})
+WITH c
+MATCH (d:Direccion {idDireccion: 1})
+CREATE (c)-[:VIVE_EN]->(d)
+
+//Relación entre Cliente y Afición (TIENE_UNA):
+MATCH (c:Cliente {idCliente: 1})
+WITH c
+MATCH (a:Aficion {nombre: 'Fútbol'})
+CREATE (c)-[:TIENE_UNA]->(a)
+
+//Relación entre Cliente y Estudio (TIENE_TITULO):
+MATCH (c:Cliente {idCliente: 1})
+WITH c
+MATCH (e:Estudio {idEstudio: 1})
+CREATE (c)-[:TIENE_TITULO]->(e)
+
+//Relación entre Producto y Categoría (PERTENECE_A):
+MATCH (p:Producto {idProducto: 1})
+WITH p
+MATCH (cat:Categoria {idCategoria: 1})
+CREATE (p)-[:PERTENECE_A]->(cat)
+
+//Relación entre Producto y Producto (ESTA_RELACIONADO):
+MATCH (p1:Producto {idProducto: 1})
+WITH p1
+MATCH (p2:Producto {idProducto: 2})
+CREATE (p1)-[:ESTA_RELACIONADO]->(p2)
+
+//Relación entre Producto y Proveedor (DISTRIBUIDO_POR):
+MATCH (p:Producto {idProducto: 1})
+WITH p
+MATCH (pr:Proveedor {idProveedor: 1})
+CREATE (p)-[:DISTRIBUIDO_POR]->(pr)
+
+//Relación entre Dirección y Ciudad (UBICADA_EN):
+MATCH (d:Direccion {idDireccion: 1})
+WITH d
+MATCH (ci:Ciudad {idCiudad: 1})
+CREATE (d)-[:UBICADA_EN]->(ci)
+
+//Relación entre Orden y Producto (COMPUESTA_DE):
+MATCH (o:Orden {idOrden: 1})
+WITH o
+MATCH (p:Producto {idProducto: 1})
+CREATE (o)-[:COMPUESTA_DE]->(p)
+
+//Relación entre Proveedor y Ciudad (SE_UBICA_EN):
+MATCH (pr:Proveedor {idProveedor: 1})
+WITH pr
+MATCH (ci:Ciudad {idCiudad: 1})
+CREATE (pr)-[:SE_UBICA_EN]->(ci)
