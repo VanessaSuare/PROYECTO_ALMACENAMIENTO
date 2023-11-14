@@ -12,6 +12,8 @@ AS row WITH row WHERE row.idDireccion IS NOT NULL MERGE (:Direccion { idDireccio
 
 // Nodo Ciudad
 (:Ciudad {idCiudad, nombre, pais})
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/Ciudad.csv' 
+AS row WITH row WHERE row.idCiudad IS NOT NULL MERGE (:Ciudad { idCiudad: toInteger(row.idCiudad), nombre: row.nombre, pais: row.pais});
 
 // Nodo Afición
 (:Aficion {nombre, tipo})
