@@ -35,6 +35,8 @@ AS row WITH row WHERE row.idProducto IS NOT NULL MERGE (:Producto { idProducto: 
 
 // Nodo Categoría
 (:Categoria {idCategoria, nombre})
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/Categoria.csv' 
+AS row WITH row WHERE row.idCategoria IS NOT NULL MERGE (:Categoria { idCategoria: toInteger(row.idCategoria), nombre: row.nombre});
 
 // Nodo Proveedor
 (:Proveedor {idProveedor, nombre})
