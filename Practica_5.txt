@@ -26,72 +26,58 @@ AS row WITH row WHERE row.idProveedor IS NOT NULL MERGE (:Proveedor { idProveedo
 LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/Aficion.csv' 
 AS row WITH row WHERE row.nombre IS NOT NULL AND row.tipo IS NOT NULL MERGE (:Aficion {nombre: row.nombre, tipo: row.tipo});
 
+// Relaciones
+(c:Cliente)-[:HA_VISTO]->(p:Producto)
+(c:Cliente)-[:HA_CREADO]->(o:Orden)
+(c:Cliente)-[:VIVE_EN]->(d:Direccion)
+(c:Cliente)-[:TIENE_UNA]->(a:Aficion)
+(c:Cliente)-[:TIENE_TITULO]->(e:Estudio)
 
-//Relaciones
+(p:Producto)-[:PERTENECE_A]->(cat:Categoria)
+(p1:Producto)-[:ESTA_RELACIONADO]->(p2:Producto)
+(p:Producto)-[:DISTRIBUIDO_POR]->(pr:Proveedor)
 
-MATCH (c:Cliente {idCliente: 1}) MATCH (p:Producto {idProducto: 1}) CREATE (c)-[:HA_VISTO]->(p)
+(d:Direccion)-[:UBICADA_EN]->(ci:Ciudad)
 
-MATCH (c:Cliente {idCliente: 1}) MATCH (o:Orden {idOrden: 1}) CREATE (c)-[:HA_CREADO]->(o)
+(o:Orden)-[:COMPUESTA_DE]->(p:Producto)
 
-MATCH (c:Cliente {idCliente: 1}) MATCH (d:Direccion {idDireccion: 1}) CREATE (c)-[:VIVE_EN]->(d)
+(pr:Proveedor)-[:SE_UBICA_EN]->(ci:Ciudad)
 
-MATCH (c:Cliente {idCliente: 1}) MATCH (a:Aficion {nombre: 'Fútbol'}) CREATE (c)-[:TIENE_UNA]->(a)
 
-MATCH (c:Cliente {idCliente: 1}) MATCH (e:Estudio {idEstudio: 1}) CREATE (c)-[:TIENE_TITULO]->(e)
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/cliente_aficion.csv' AS row
+MATCH (c:Cliente {idCliente: toInteger(row.idCliente)})
+MATCH (a:Aficion {idAficion: toInteger(row.idAficion)})
+CREATE (c)-[:TIENE_AFICION]->(a)
 
-MATCH (p:Producto {idProducto: 1}) MATCH (cat:Categoria {idCategoria: 1}) CREATE (p)-[:PERTENECE_A]->(cat)
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/cliente_ciudad.csv' AS row
+MATCH (c:Cliente {idCliente: toInteger(row.idCliente)})
+MATCH (ci:Ciudad {idCiudad: toInteger(row.idCiudad)})
+CREATE (c)-[:VIVE_EN]->(ci)
 
-MATCH (p1:Producto {idProducto: 1}) WITH p1 MATCH (p2:Producto {idProducto: 2}) CREATE (p1)-[:ESTA_RELACIONADO]->(p2)
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/cliente_estudio.csv' AS row
+MATCH (c:Cliente {idCliente: toInteger(row.idCliente)})
+MATCH (e:Estudio {idEstudio: toInteger(row.idEstudio)})
+CREATE (c)-[:TIENE_TITULO_EN]->(e)
 
-MATCH (p:Producto {idProducto: 1}) MATCH (pr:Proveedor {idProveedor: 1}) CREATE (p)-[:DISTRIBUIDO_POR]->(pr)
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/cliente_orden.csv' AS row
+MATCH (c:Cliente {idCliente: toInteger(row.idCliente)})
+MATCH (o:Orden {idOrden: toInteger(row.idOrden)})
+CREATE (c)-[:HA_REALIZADO]->(o)
 
-MATCH (d:Direccion {idDireccion: 1}) MATCH (ci:Ciudad {idCiudad: 1}) CREATE (d)-[:UBICADA_EN]->(ci)
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/producto_categoria.csv' AS row
+MATCH (p:Producto {idProducto: toInteger(row.idProducto)})
+MATCH (cat:Categoria {idCategoria: toInteger(row.idCategoria)})
+CREATE (p)-[:PERTENECE_A]->(cat)
 
-MATCH (o:Orden {idOrden: 1}) MATCH (p:Producto {idProducto: 1}) CREATE (o)-[:COMPUESTA_DE]->(p)
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/producto_orden.csv' AS row
+MATCH (p:Producto {idProducto: toInteger(row.idProducto)})
+MATCH (o:Orden {idOrden: toInteger(row.idOrden)})
+CREATE (p)-[:INCLUIDO_EN]->(o)
 
-MATCH (pr:Proveedor {idProveedor: 1}) MATCH (ci:Ciudad {idCiudad: 1}) CREATE (pr)-[:SE_UBICA_EN]->(ci)
-
-MATCH (c:Cliente {idCliente: 20}) MATCH (p:Producto {idProducto: 1}) CREATE (c)-[:HA_VISTO]->(p)
-
-MATCH (c:Cliente {idCliente: 20}) MATCH (o:Orden {idOrden: 1}) CREATE (c)-[:HA_CREADO]->(o)
-
-MATCH (c:Cliente {idCliente: 20}) MATCH (d:Direccion {idDireccion: 1}) CREATE (c)-[:VIVE_EN]->(d)
-
-MATCH (c:Cliente {idCliente: 20}) MATCH (a:Aficion {nombre: 'Fútbol'}) CREATE (c)-[:TIENE_UNA]->(a)
-
-MATCH (c:Cliente {idCliente: 20}) MATCH (e:Estudio {idEstudio: 1}) CREATE (c)-[:TIENE_TITULO]->(e)
-
-MATCH (c:Cliente {idCliente: 8}) MATCH (p:Producto {idProducto: 1}) CREATE (c)-[:HA_VISTO]->(p)
-
-MATCH (c:Cliente {idCliente: 8}) MATCH (o:Orden {idOrden: 1}) CREATE (c)-[:HA_CREADO]->(o)
-
-MATCH (c:Cliente {idCliente: 8}) MATCH (d:Direccion {idDireccion: 1}) CREATE (c)-[:VIVE_EN]->(d)
-
-MATCH (c:Cliente {idCliente: 8}) MATCH (a:Aficion {nombre: 'Fútbol'}) CREATE (c)-[:TIENE_UNA]->(a)
-
-MATCH (c:Cliente {idCliente: 8}) MATCH (e:Estudio {idEstudio: 1}) CREATE (c)-[:TIENE_TITULO]->(e)
-
-MATCH (p:Producto {idProducto: 1}) MATCH (cat:Categoria {idCategoria: 1}) CREATE (p)-[:PERTENECE_A]->(cat)
-
-MATCH (p1:Producto {idProducto: 1}) WITH p1 MATCH (p2:Producto {idProducto: 2}) CREATE (p1)-[:ESTA_RELACIONADO]->(p2)
-
-MATCH (p:Producto {idProducto: 1}) MATCH (pr:Proveedor {idProveedor: 1}) CREATE (p)-[:DISTRIBUIDO_POR]->(pr)
-
-MATCH (d:Direccion {idDireccion: 1}) MATCH (ci:Ciudad {idCiudad: 1}) CREATE (d)-[:UBICADA_EN]->(ci)
-
-MATCH (o:Orden {idOrden: 1}) MATCH (p:Producto {idProducto: 1}) CREATE (o)-[:COMPUESTA_DE]->(p)
-
-MATCH (pr:Proveedor {idProveedor: 1}) MATCH (ci:Ciudad {idCiudad: 1}) CREATE (pr)-[:SE_UBICA_EN]->(ci)
-
-MATCH (p:Producto {idProducto: 8}) MATCH (cat:Categoria {idCategoria: 2}) CREATE (p)-[:PERTENECE_A]->(cat)
-
-MATCH (p:Producto {idProducto: 8}) MATCH (pr:Proveedor {idProveedor: 14}) CREATE (p)-[:DISTRIBUIDO_POR]->(pr)
-
-MATCH (d:Direccion {idDireccion: 4}) MATCH (ci:Ciudad {idCiudad: 8}) CREATE (d)-[:UBICADA_EN]->(ci)
-
-MATCH (o:Orden {idOrden: 5}) MATCH (p:Producto {idProducto: 8}) CREATE (o)-[:COMPUESTA_DE]->(p)
-
-MATCH (pr:Proveedor {idProveedor: 14}) MATCH (ci:Ciudad {idCiudad: 8}) CREATE (pr)-[:SE_UBICA_EN]->(ci)
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/producto_proveedor.csv' AS row
+MATCH (p:Producto {idProducto: toInteger(row.idProducto)})
+MATCH (pr:Proveedor {idProveedor: toInteger(row.idProveedor)})
+CREATE (p)-[:DISTRIBUIDO_POR]->(pr)
 
 
 // Consultar todas las ordenes creadas por un cliente.
