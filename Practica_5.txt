@@ -2,6 +2,8 @@
 
 // Nodo Cliente
 (:Cliente {idCliente, nombre, edad, telefono, sexo, tieneTitulo})
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/Cliente.csv' 
+AS row WITH row WHERE row.idCliente IS NOT NULL MERGE (c:Cliente { idCliente: toInteger(row.idCliente), nombre: row.nombre, edad: toInteger(row.edad), telefono: row.telefono, sexo: row.sexo, tieneTitulo: row.tieneTitulo});
 
 // Nodo Dirección
 (:Direccion {idDireccion, ubicacion, barrio, codigoPostal})
