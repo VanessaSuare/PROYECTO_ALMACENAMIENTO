@@ -25,6 +25,8 @@ AS row WITH row WHERE row.idEstudio IS NOT NULL MERGE (:Estudio { idEstudio: toI
 
 // Nodo Orden
 (:Orden {idOrden, fechaOrden, monto})
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/Orden.csv' 
+AS row WITH row WHERE row.idOrden IS NOT NULL MERGE (:Orden { idOrden: toInteger(row.idOrden), fechaOrden: date(row.fechaOrden), monto: toInteger(row.monto)});
 
 // Nodo Producto
 (:Producto {idProducto, nombre, precio})
