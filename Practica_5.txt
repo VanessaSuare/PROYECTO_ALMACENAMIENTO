@@ -26,58 +26,52 @@ AS row WITH row WHERE row.idProveedor IS NOT NULL MERGE (:Proveedor { idProveedo
 LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/Aficion.csv' 
 AS row WITH row WHERE row.nombre IS NOT NULL AND row.tipo IS NOT NULL MERGE (:Aficion {nombre: row.nombre, tipo: row.tipo});
 
-// Relaciones
-(c:Cliente)-[:HA_VISTO]->(p:Producto)
-(c:Cliente)-[:HA_CREADO]->(o:Orden)
-(c:Cliente)-[:VIVE_EN]->(d:Direccion)
-(c:Cliente)-[:TIENE_UNA]->(a:Aficion)
-(c:Cliente)-[:TIENE_TITULO]->(e:Estudio)
+//Relaciones
 
-(p:Producto)-[:PERTENECE_A]->(cat:Categoria)
-(p1:Producto)-[:ESTA_RELACIONADO]->(p2:Producto)
-(p:Producto)-[:DISTRIBUIDO_POR]->(pr:Proveedor)
-
-(d:Direccion)-[:UBICADA_EN]->(ci:Ciudad)
-
-(o:Orden)-[:COMPUESTA_DE]->(p:Producto)
-
-(pr:Proveedor)-[:SE_UBICA_EN]->(ci:Ciudad)
-
-
-LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/cliente_aficion.csv' AS row
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/cliente_visto.csv' AS row
 MATCH (c:Cliente {idCliente: toInteger(row.idCliente)})
-MATCH (a:Aficion {idAficion: toInteger(row.idAficion)})
-CREATE (c)-[:TIENE_UNA]->(a) // No hizo nada
-
-LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/cliente_ciudad.csv' AS row
-MATCH (c:Cliente {idCliente: toInteger(row.idCliente)})
-MATCH (ci:Ciudad {idCiudad: toInteger(row.idCiudad)})
-CREATE (c)-[:VIVE_EN]->(ci)
-
-LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/cliente_estudio.csv' AS row
-MATCH (c:Cliente {idCliente: toInteger(row.idCliente)})
-MATCH (e:Estudio {idEstudio: toInteger(row.idEstudio)})
-CREATE (c)-[:TIENE_TITULO_EN]->(e)
+MATCH (p:Producto {idProducto: toInteger(row.idProducto)})
+CREATE (c)-[:HA_VISTO]->(p);
 
 LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/cliente_orden.csv' AS row
 MATCH (c:Cliente {idCliente: toInteger(row.idCliente)})
 MATCH (o:Orden {idOrden: toInteger(row.idOrden)})
-CREATE (c)-[:HA_REALIZADO]->(o)
+CREATE (c)-[:HA_CREADO]->(o);
+
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/cliente_direccion.csv' AS row
+MATCH (c:Cliente {idCliente: toInteger(row.idCliente)})
+MATCH (d:Direccion {idDireccion: toInteger(row.idDireccion)})
+CREATE (c)-[:VIVE_EN]->(d);
 
 LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/producto_categoria.csv' AS row
 MATCH (p:Producto {idProducto: toInteger(row.idProducto)})
 MATCH (cat:Categoria {idCategoria: toInteger(row.idCategoria)})
-CREATE (p)-[:PERTENECE_A]->(cat)
+CREATE (p)-[:PERTENECE_A]->(cat);
 
-LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/producto_orden.csv' AS row
-MATCH (p:Producto {idProducto: toInteger(row.idProducto)})
-MATCH (o:Orden {idOrden: toInteger(row.idOrden)})
-CREATE (p)-[:INCLUIDO_EN]->(o)
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/producto_relacionado.csv' AS row
+MATCH (p1:Producto {idProducto: toInteger(row.idProducto1)})
+MATCH (p2:Producto {idProducto: toInteger(row.idProducto2)})
+CREATE (p1)-[:ESTA_RELACIONADO]->(p2);
 
 LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/producto_proveedor.csv' AS row
 MATCH (p:Producto {idProducto: toInteger(row.idProducto)})
 MATCH (pr:Proveedor {idProveedor: toInteger(row.idProveedor)})
-CREATE (p)-[:DISTRIBUIDO_POR]->(pr)
+CREATE (p)-[:DISTRIBUIDO_POR]->(pr);
+
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/direccion_ciudad.csv' AS row
+MATCH (d:Direccion {idDireccion: toInteger(row.idDireccion)})
+MATCH (ci:Ciudad {idCiudad: toInteger(row.idCiudad)})
+CREATE (d)-[:UBICADA_EN]->(ci);
+
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/orden_producto.csv' AS row
+MATCH (o:Orden {idOrden: toInteger(row.idOrden)})
+MATCH (p:Producto {idProducto: toInteger(row.idProducto)})
+CREATE (o)-[:COMPUESTA_DE]->(p);
+
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/proveedor_ciudad.csv' AS row
+MATCH (pr:Proveedor {idProveedor: toInteger(row.idProveedor)})
+MATCH (ci:Ciudad {idCiudad: toInteger(row.idCiudad)})
+CREATE (pr)-[:SE_UBICA_EN]->(ci);
 
 
 // Consultar todas las ordenes creadas por un cliente.
