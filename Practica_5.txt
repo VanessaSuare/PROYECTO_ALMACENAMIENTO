@@ -164,7 +164,7 @@ ORDER BY cantidadCompras DESC;
 (hombre/mujer)? aun no se si funciona
 
 MATCH (c:Cliente)-[:HA_CREADO]->(o:Orden)-[:COMPUESTA_DE]->(p:Producto)
-WHERE c.sexo = 'H'  // o 'M' para mujeres
+WHERE c.sexo = 'Hombre'  // o 'Mujer' para mujeres
 WITH p, COUNT(o) AS cantidadCompras
 RETURN p, cantidadCompras
 ORDER BY cantidadCompras DESC;
