@@ -20,6 +20,8 @@ AS row WITH row WHERE row.idCiudad IS NOT NULL MERGE (:Ciudad { idCiudad: toInte
 
 // Nodo Estudio
 (:Estudio {idEstudio, titulo})
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/Estudio.csv' 
+AS row WITH row WHERE row.idEstudio IS NOT NULL MERGE (:Estudio { idEstudio: toInteger(row.idEstudio), titulo: row.titulo});
 
 // Nodo Orden
 (:Orden {idOrden, fechaOrden, monto})
