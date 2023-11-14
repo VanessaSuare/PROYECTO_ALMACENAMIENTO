@@ -17,6 +17,7 @@ AS row WITH row WHERE row.idCiudad IS NOT NULL MERGE (:Ciudad { idCiudad: toInte
 
 // Nodo Afición
 (:Aficion {nombre, tipo})
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/Aficion.csv' AS row WITH row WHERE row.nombre IS NOT NULL AND row.tipo IS NOT NULL MERGE (:Aficion {nombre: row.nombre, tipo: row.tipo});
 
 // Nodo Estudio
 (:Estudio {idEstudio, titulo})
