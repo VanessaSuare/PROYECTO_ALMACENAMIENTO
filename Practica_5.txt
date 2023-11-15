@@ -24,7 +24,7 @@ LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYE
 AS row WITH row WHERE row.idProveedor IS NOT NULL MERGE (:Proveedor { idProveedor: toInteger(row.idProveedor), nombre: row.nombre});
 
 LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/Aficion.csv' 
-AS row WITH row WHERE row.nombre IS NOT NULL AND row.tipo IS NOT NULL MERGE (:Aficion {nombre: row.nombre, tipo: row.tipo});
+AS row WITH row WHERE row.nombre IS NOT NULL AND row.tipo IS NOT NULL MERGE (:Aficion {idAficion: toInteger(row.idAficion), nombre: row.nombre, tipo: row.tipo});
 
 //Relaciones
 
@@ -73,6 +73,16 @@ MATCH (pr:Proveedor {idProveedor: toInteger(row.idProveedor)})
 MATCH (ci:Ciudad {idCiudad: toInteger(row.idCiudad)})
 CREATE (pr)-[:SE_UBICA_EN]->(ci);
 
+
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/cliente_aficion.csv' AS row
+MATCH (c:Cliente {idCliente: toInteger(row.idCliente)})
+MATCH (a:Aficion {idAficion: toInteger(row.idAficion)})
+CREATE (c)-[:TIENE_UNA]->(a);
+
+LOAD CSV WITH HEADERS FROM 'https://raw.githubusercontent.com/VanessaSuare/PROYECTO_ALMACENAMIENTO/main/cliente_estudio.csv' AS row
+MATCH (c:Cliente {idCliente: toInteger(row.idCliente)})
+MATCH (e:Estudio {idEstudio: toInteger(row.idEstudio)})
+CREATE (c)-[:TIENE_TITULO]->(e);
 
 // Consultar todas las ordenes creadas por un cliente.
 
