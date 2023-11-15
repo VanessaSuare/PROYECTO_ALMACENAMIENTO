@@ -96,7 +96,6 @@ RETURN p, cantidadCompras
 ORDER BY cantidadCompras DESC;
 
 // ¿Cuáles son los productos más demandados por los clientes de un sexo
-(hombre/mujer)? aun no se si funciona
 
 MATCH (c:Cliente)-[:HA_CREADO]->(o:Orden)-[:COMPUESTA_DE]->(p:Producto)
 WHERE c.sexo = 'Hombre'  // o 'Mujer' para mujeres
@@ -105,13 +104,13 @@ RETURN p, cantidadCompras
 ORDER BY cantidadCompras DESC;
 
 // ¿Cuáles son los principales productos comprados por los clientes que tiene un título
-académico? aun no he probado con mas productos
 
-MATCH (c:Cliente {tieneTitulo: true})-[:HA_CREADO]->(o:Orden)-[:COMPUESTA_DE]->(p:Producto)
+MATCH (c:Cliente)-[:TIENE_TITULO]->(e:Estudio)
+MATCH (c)-[:HA_CREADO]->(o:Orden)-[:COMPUESTA_DE]->(p:Producto)
 WITH p, COUNT(o) AS cantidadCompras
-RETURN p, cantidadCompras
-ORDER BY cantidadCompras DESC;
-
+RETURN p.nombre AS NombreProducto, cantidadCompras
+ORDER BY cantidadCompras DESC
+LIMIT 10;
 // Sugerencias
 
 // 5. Sugiere productos a un cliente en base a los productos que ha comprado
